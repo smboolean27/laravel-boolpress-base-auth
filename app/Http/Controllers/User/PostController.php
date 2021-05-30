@@ -163,8 +163,17 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $post)
     {
-        //
+        // Controllo se l'utente è autorizzato alla modifica
+        $user_id = Auth::id();
+
+        if( $post->user_id != $user_id ) {
+            abort('403');
+        }
+
+        $post->delete();
+
+        return redirect()->route('user.posts.index')->with('message', 'Il post è stato eliminato!');
     }
 }
