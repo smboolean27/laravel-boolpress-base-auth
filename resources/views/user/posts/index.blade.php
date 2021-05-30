@@ -27,7 +27,7 @@
 				<td>
 					<a href="{{route('user.posts.show', [ 'post' => $post->id ])}}"><button type="button" class="btn btn-primary"><i class="fas fa-search"></i></button></a>
 					<a href="{{route('user.posts.edit', [ 'post' => $post->id ])}}"><button type="button" class="btn btn-success"><i class="fas fa-pencil-alt"></i></button></a>
-					<form action="{{route('user.posts.destroy', [ 'post' => $post->id ])}}" method="POST">
+					<form action="{{route('user.posts.destroy', [ 'post' => $post->id ])}}" method="POST" class="d-inline">
 						@csrf
 						@method('DELETE')
 						<button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
