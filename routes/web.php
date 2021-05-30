@@ -24,5 +24,5 @@ Route::prefix('user')->name('user.')->namespace('User')->middleware('auth')->gro
     Route::get('/', 'HomeController@index')->name('home');
     Route::resource('posts', 'PostController');
     // Route::resource('tags', 'TagController');
-    // Route::delete('comments/{comment}', 'CommentController@destroy')->name('comments.destroy');
+    Route::delete('comments/{comment}', 'CommentController@destroy')->name('comments.destroy');
 });
