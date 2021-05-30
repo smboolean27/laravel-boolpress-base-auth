@@ -101,9 +101,18 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
-        //
+        // Controllo se l'utente è autorizzato alla modifica
+        $user_id = Auth::id();
+        
+        if( $post->user_id != $user_id ) {
+            abort('403');
+        }
+
+        $tags = Tag::all();
+
+        return view('user.posts.edit', compact('post', 'tags'));
     }
 
     /**
@@ -113,9 +122,39 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
-        //
+        // Controllo se l'utente è autorizzato alla modifica
+        $user_id = Auth::id();
+
+        if( $post->user_id != $user_id ) {
+            abort('403');
+        }
+
+        $validation = $this->validation;
+        $validation['title'] = 'required|string|max:255|unique:posts,title,' . $post->id;
+
+        // validation
+        $request->validate($validation);
+
+        $data = $request->all();
+        
+        // controllo checkbox
+        $data['published'] = !isset($data['published']) ? 0 : 1;
+        // imposto lo slug partendo dal title
+        $data['slug'] = Str::slug($data['title'], '-');
+
+        // Update
+        $post->update($data);
+
+        // aggiorno i tags
+        if( !isset($data['tags']) ) {
+            $data['tags'] = [];
+        }
+        $post->tags()->sync($data['tags']);
+
+        // return
+        return redirect()->route('user.posts.show', $post)->with('message', 'Il post ' . $post->title . ' è stato creato!');
     }
 
     /**
