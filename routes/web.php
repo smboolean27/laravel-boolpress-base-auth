@@ -13,9 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 // Area Pubblica!!
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'BlogController@index')->name('guest.index');
+Route::get('posts/{slug}', 'BlogController@showPost')->name('guest.show-post');
+Route::get('tags/{slug}', 'BlogController@showTag')->name('guest.show-tag');
+Route::post('posts/{post}/add-comment', 'BlogController@addComment')->name('guest.add-comment');
 
 Auth::routes();
 
