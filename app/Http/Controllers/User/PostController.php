@@ -4,11 +4,19 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Post;
+use App\Tag;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
+    protected $validation = [
+        'date' => 'required|date',
+        'content' => 'required|string',
+        'image' => 'nullable|url'
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -30,7 +38,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        $tags = Tag::all();
+
+        return view('user.posts.create', compact('tags'));
     }
 
     /**
@@ -41,7 +51,31 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validation = $this->validation;
+        $validation['title'] = 'required|string|max:255|unique:posts';
+        
+        // validation
+        $request->validate($validation);
+
+        $data = $request->all();
+        
+        // controllo checkbox
+        $data['published'] = !isset($data['published']) ? 0 : 1;
+        // imposto lo slug partendo dal title
+        $data['slug'] = Str::slug($data['title'], '-');
+        // imposto lo user_id
+        $data['user_id'] = Auth::id();
+
+        // Insert
+        $newPost = Post::create($data);    
+        
+        // aggiungo i tags
+        if( isset($data['tags']) ) {
+            $newPost->tags()->attach($data['tags']);
+        }
+
+        // redirect
+        return redirect()->route('user.posts.index')->with('message', 'Il post è stato creato!');
     }
 
     /**
