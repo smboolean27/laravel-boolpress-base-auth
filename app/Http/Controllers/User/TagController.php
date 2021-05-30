@@ -73,9 +73,9 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Tag $tag)
     {
-        //
+        return view('user.tags.edit', compact('tag'));
     }
 
     /**
@@ -85,9 +85,23 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Tag $tag)
     {
-        //
+        $validation = [
+            'name' => 'required|string|max:50|unique:tags'
+        ];
+        // validation
+        $request->validate($validation);
+        $data = $request->all();
+
+        // imposto lo slug partendo dal title
+        $data['slug'] = Str::slug($data['name'], '-');
+
+        // Update
+        $tag->update($data);
+
+        return redirect()->route('user.tags.show', $tag)->with('message', 'Il tag ' . $tag->name . ' è stato modificato!');
+
     }
 
     /**
