@@ -110,8 +110,10 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Tag $tag)
     {
-        //
+        $tag->delete();
+
+        return redirect()->route('user.tags.index')->with('message', 'Il tag è stato eliminato!');
     }
 }
