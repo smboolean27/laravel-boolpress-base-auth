@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Tag;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class TagController extends Controller
@@ -27,7 +28,7 @@ class TagController extends Controller
      */
     public function create()
     {
-        //
+        return view('user.tags.create');
     }
 
     /**
@@ -38,7 +39,21 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validation = [
+            'name' => 'required|string|max:50|unique:tags'
+        ];
+        // validation
+        $request->validate($validation);
+        $data = $request->all();
+
+        // imposto lo slug partendo dal title
+        $data['slug'] = Str::slug($data['name'], '-');
+
+        // Insert
+        Tag::create($data);
+
+        // redirect
+        return redirect()->route('user.tags.index')->with('message', 'Il tag è stato creato!');
     }
 
     /**
