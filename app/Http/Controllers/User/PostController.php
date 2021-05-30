@@ -154,7 +154,7 @@ class PostController extends Controller
         $post->tags()->sync($data['tags']);
 
         // return
-        return redirect()->route('user.posts.show', $post)->with('message', 'Il post ' . $post->title . ' è stato creato!');
+        return redirect()->route('user.posts.show', $post)->with('message', 'Il post ' . $post->title . ' è stato modificato!');
     }
 
     /**
