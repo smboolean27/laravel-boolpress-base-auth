@@ -8,13 +8,14 @@ use App\Tag;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
     protected $validation = [
         'date' => 'required|date',
         'content' => 'required|string',
-        'image' => 'nullable|url'
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
     ];
 
     /**
@@ -65,6 +66,10 @@ class PostController extends Controller
         $data['slug'] = Str::slug($data['title'], '-');
         // imposto lo user_id
         $data['user_id'] = Auth::id();
+        // upload file image
+        if ( isset($data['image']) ) {
+            $data['image'] = Storage::disk('public')->put('images', $data['image']);
+        }
 
         // Insert
         $newPost = Post::create($data);    
@@ -143,6 +148,10 @@ class PostController extends Controller
         $data['published'] = !isset($data['published']) ? 0 : 1;
         // imposto lo slug partendo dal title
         $data['slug'] = Str::slug($data['title'], '-');
+        // upload file image
+        if ( isset($data['image']) ) {
+            $data['image'] = Storage::disk('public')->put('images', $data['image']);
+        }
 
         // Update
         $post->update($data);
