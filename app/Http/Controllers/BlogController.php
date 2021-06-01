@@ -66,5 +66,12 @@ class BlogController extends Controller
 
         return back();
     }
+    public function search()
+    {
+       
+        $tags = Tag::all();
+        // restituisco la pagina search
+        return view('guest.search', compact('tags'));
+    }
 
 }
