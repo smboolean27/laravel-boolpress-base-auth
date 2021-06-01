@@ -2,20 +2,7 @@ new Vue({
     el: '#app',
     data:{
         title:'',
-        posts: [
-            // {
-            //     title:'prova',
-            //     content:'provaprova'
-            // },
-            // {
-            //     title:'prova',
-            //     content:'provaprova'
-            //     },
-            //     {
-            //         title:'prova',
-            //         content:'provaprova'
-            //     }
-        ]
+        posts: []
     },
     methods:{
       postsSearch: function() {
@@ -25,8 +12,7 @@ new Vue({
               title:this.title
             }
           }).then((result)=>{
-            this.posts = result.data.hits;
-            console.log(result.data.hits);
+            this.posts = result.data;
           });
         }
       },
